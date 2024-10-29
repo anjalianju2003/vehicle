@@ -21,5 +21,8 @@ from store import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('vehicle/add',views.VehicleView.as_view(),name="vehicle-add"),
-    path("vehicle/all/",views.VehicleListView.as_view(),name="vehicle-list")
+    path("vehicle/all/",views.VechileListView.as_view(),name="vehicle-list"),
+    path("vehicle/<int:pk>/",views.VehicleDetailView.as_view(),name="vehicle-detail"),
+    path("vehicle/<int:pk>/remove/",views.VehicleDeleteView.as_view(),name="vehicle-delete"),
+    path("vehicle/<int:pk>/change/",views.VehicleUpdateView.as_view(),name="vehicle-update")
 ]
