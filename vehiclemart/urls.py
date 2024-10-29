@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from store import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +27,4 @@ urlpatterns = [
     path("vehicle/<int:pk>/",views.VehicleDetailView.as_view(),name="vehicle-detail"),
     path("vehicle/<int:pk>/remove/",views.VehicleDeleteView.as_view(),name="vehicle-delete"),
     path("vehicle/<int:pk>/change/",views.VehicleUpdateView.as_view(),name="vehicle-update")
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

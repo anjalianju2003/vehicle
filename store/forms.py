@@ -12,8 +12,13 @@ class VehicleForm(forms.Form):
     price=forms.IntegerField(widget=forms.NumberInput(attrs={"class":"form-control"}))
     brand=forms.CharField(widget=forms.TextInput(attrs={"class":"form-control"}))
     owner_type=forms.ChoiceField(choices=Vehicle.owner_options,widget=forms.Select(attrs={"class":"form-control"}))
+    picture=forms.ImageField()
 
-   
+class VehicleUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model=Vehicle
+        fields="__all__"   
 
 
 

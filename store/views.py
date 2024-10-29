@@ -1,10 +1,10 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 
 # Create your views here.
 
 from django.views.generic import View
 
-from store.forms import VehicleForm
+from store.forms import VehicleForm,VehicleUpdateForm
 
 from store.models import Vehicle
 
@@ -26,7 +26,7 @@ class VehicleView(View):
 
         form_data=request.POST
 
-        form_instance=self.form_class(form_data)
+        form_instance=self.form_class(form_data,files=request.FILES)
 
         if form_instance.is_valid():
             
@@ -98,7 +98,7 @@ class VehicleUpdateView(View):
 
     template_name="vehicle_update.html"
 
-    form_class=VehicleForm
+    form_class=VehicleUpdateForm
 
     def get(self,request,*args,**kwargs):
 
@@ -106,19 +106,19 @@ class VehicleUpdateView(View):
 
         vehicle_object=Vehicle.objects.get(id=id)
 
-        data={
-            "name":vehicle_object.name,
-            "varient":vehicle_object.varient,
-            "description":vehicle_object.description,
-            "fuel_type":vehicle_object.fuel_type,
-            "running_km":vehicle_object.running_km,
-            "color":vehicle_object.color,
-            "price":vehicle_object.price,
-            "brand":vehicle_object.brand,
-            "owner_type":vehicle_object.owner_type
-        }
+        # data={
+        #     "name":vehicle_object.name,
+        #     "varient":vehicle_object.varient,
+        #     "description":vehicle_object.description,
+        #     "fuel_type":vehicle_object.fuel_type,
+        #     "running_km":vehicle_object.running_km,
+        #     "color":vehicle_object.color,
+        #     "price":vehicle_object.price,
+        #     "brand":vehicle_object.brand,
+        #     "owner_type":vehicle_object.owner_type
+        # }
 
-        form_instance=self.form_class(initial=data)
+        form_instance=self.form_class(instance=vehicle_object)
 
         return render(request,self.template_name,{"form":form_instance})
 
@@ -126,16 +126,24 @@ class VehicleUpdateView(View):
 
         id=kwargs.get("pk")
 
+        vehicle_object=get_object_or_404(Vehicle,id=id)
+
         form_data=request.POST
 
-        from_instance=self.form_class(form_data)
+        form_instance=self.form_class(form_data,files=request.FILES,instance=vehicle_object)
 
-        if from_instance.is_valid():
+        if form_instance.is_valid():
 
-            data=from_instance.cleaned_data
-
-            Vehicle.objects.filter(id=id).update(**data)
+            form_instance.save()
 
             return redirect("vehicle-list")
+        
+        return render(request,self.template_name,{"form":form_instance})
 
-        return render(request,self.template_name,{"form":from_instance})   
+   
+
+          
+
+#uploading
+#add enctyp="multipart/form-data" aatribute in form tag
+#add request.FILES while initializing form_instances in post method
